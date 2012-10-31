@@ -12,15 +12,20 @@ public class ControlSumm {
 
     private String originalControlSumm;
 
-    public ArrayList<String> findFile(String path) {
+    public ArrayList<String> findFile(String path, boolean inside) {
         String[] dirForSearch = new File(path).list();
         ArrayList<String> result = new ArrayList<String>();
         if (dirForSearch != null) {
             for (String current : dirForSearch) {
-                String currentPath = path.concat(current);
+                String currentPath;
+                if (!inside) {
+                    currentPath = path.concat(current);
+                } else {
+                    currentPath = path.concat("/".concat(current));
+                }
                 File currentFile = new File(currentPath);
                 if (currentFile.isDirectory()) {
-                    result.addAll(findFile(currentPath));
+                    result.addAll(findFile(currentPath, true));
                 } else {
                     if (checkControlSumm(currentPath).equals(this.originalControlSumm)) {
                         result.add(currentPath);
@@ -46,6 +51,7 @@ public class ControlSumm {
 
             inputFile.close();
         } catch (FileNotFoundException notFound) {
+            System.out.println("Что за файл такой - " + file);
             //скорее всего, в имени файла пробел, а с такими мы не работаем
         } catch (IOException e) {
             e.printStackTrace();

@@ -8,10 +8,10 @@ public class MyCRC implements Checksum {
     private int crc_table[];
 
     public MyCRC() {
-        this.crc_table = new int[256];
-        makeCRCTable();
-        printCRCTable();
-        reset();
+        //this.crc_table = new int[256];
+        //makeCRCTable();
+        //printCRCTable();
+        //reset();
         crc = new CRC32();
     }
 
@@ -22,18 +22,18 @@ public class MyCRC implements Checksum {
 
     @Override
     public void update(byte[] b, int off, int len) {
-        int c = ~this.value;
+        /*int c = ~this.value;
         while (--len >= 0) {
             c = crc_table[(c ^ b[off++]) & 0xff] ^ (c >>> 8);
         }
-        this.value = ~c;
+        this.value = ~c;  */
 
         crc.update(b, off, len);
     }
 
     @Override
     public long getValue() {
-        this.result = (long) this.value & 0xffffffffL;
+        /*this.result = (long) this.value & 0xffffffffL;  */
         return crc.getValue();
     }
 
