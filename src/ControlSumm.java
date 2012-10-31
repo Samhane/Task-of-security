@@ -3,7 +3,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
 public class ControlSumm {
@@ -16,14 +15,16 @@ public class ControlSumm {
     public ArrayList<String> findFile(String path) {
         String[] dirForSearch = new File(path).list();
         ArrayList<String> result = new ArrayList<String>();
-        for (String current : dirForSearch) {
-            String currentPath = path.concat(current);
-            File currentFile = new File(currentPath);
-            if (currentFile.isDirectory()) {
-                result.addAll(findFile(currentPath));
-            } else {
-                if (checkControlSumm(currentPath).equals(this.originalControlSumm)) {
-                    result.add(currentPath);
+        if (dirForSearch != null) {
+            for (String current : dirForSearch) {
+                String currentPath = path.concat(current);
+                File currentFile = new File(currentPath);
+                if (currentFile.isDirectory()) {
+                    result.addAll(findFile(currentPath));
+                } else {
+                    if (checkControlSumm(currentPath).equals(this.originalControlSumm)) {
+                        result.add(currentPath);
+                    }
                 }
             }
         }
@@ -34,7 +35,7 @@ public class ControlSumm {
     private String checkControlSumm(String file) {
         byte[] buf = new byte[8000];
         int nLength = 0;
-        Checksum cs = new CRC32();
+        Checksum cs = new MyCRC();
 
         try {
             FileInputStream inputFile = new FileInputStream(file);
