@@ -1,40 +1,18 @@
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.zip.Checksum;
 
-public class ControlSumm {
+public class ControlSumm extends ParentSecure {
+    private String originalControlSumm;
+
     public void setOriginalControlSumm(String file) {
         this.originalControlSumm = checkControlSumm(file);
     }
 
-    private String originalControlSumm;
-
-    public ArrayList<String> findFile(String path, boolean inside) {
-        String[] dirForSearch = new File(path).list();
-        ArrayList<String> result = new ArrayList<String>();
-        if (dirForSearch != null) {
-            for (String current : dirForSearch) {
-                String currentPath;
-                if (!inside) {
-                    currentPath = path.concat(current);
-                } else {
-                    currentPath = path.concat("/".concat(current));
-                }
-                File currentFile = new File(currentPath);
-                if (currentFile.isDirectory()) {
-                    result.addAll(findFile(currentPath, true));
-                } else {
-                    if (checkControlSumm(currentPath).equals(this.originalControlSumm)) {
-                        result.add(currentPath);
-                    }
-                }
-            }
-        }
-
-        return result;
+    @Override
+    protected boolean checkFile(String file) {
+        return checkControlSumm(file).equals(this.originalControlSumm);
     }
 
     private String checkControlSumm(String file) {
