@@ -6,7 +6,7 @@ import java.util.zip.Checksum;
 public class ControlSumm extends ParentSecure {
     private String originalControlSumm;
 
-    public void setOriginalControlSumm(String file) {
+    public ControlSumm(String file) {
         this.originalControlSumm = checkControlSumm(file);
     }
 
