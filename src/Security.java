@@ -19,8 +19,14 @@ public class Security {
         if (what != 1 && what != 0) {
             System.out.println("Неправильный ввод");
         } else {
-            work = (what == 1) ? new ControlSumm(sourceFile) : new Signature(sourceFile);
-            answer = work.findFile(path, false);
+            if (what == 1) {
+                work = new ControlSumm(sourceFile);
+            } else {
+                System.out.println("Введите смещение для подсчета сигнатуры: ");
+                int offset = in.nextInt();
+                work = new Signature(sourceFile, offset);
+            }
+            answer = work.findFile(path, true);
         }
 
         for (String option : answer) {
