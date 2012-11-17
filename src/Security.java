@@ -26,7 +26,7 @@ public class Security {
                 int offset = in.nextInt();
                 work = new Signature(sourceFile, offset);
             }
-            answer = work.findFile(path, true);
+            answer = work.findFile(path, false);
         }
 
         for (String option : answer) {

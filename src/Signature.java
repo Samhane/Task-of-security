@@ -1,38 +1,33 @@
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 public class Signature extends ParentSecure {
     private String originalSignature;
     private int offset;
+    private int sizeToRead;
 
     public Signature(String file, int offset) {
         this.offset = offset;
+        this.sizeToRead = 32;
         this.originalSignature = checkSignature(file);
     }
 
     private String checkSignature(String file) {
-        byte[] buf = new byte[800000];
+        byte[] buf = new byte[this.sizeToRead];
         byte[] result = new byte[0];
-        int nLength = 0;
 
         try {
-            FileInputStream inputFile = new FileInputStream(file);
-            nLength = inputFile.read(buf);
+            RandomAccessFile inputFile = new RandomAccessFile(file, "r");
+            inputFile.seek(this.offset);
+            inputFile.read(buf, 0, buf.length);
             MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] current = new byte[2001];
-            if ((this.offset + 2000) > nLength) {
-                this.offset = 0;
-            }
-
-            for (int i = this.offset, j = 0; i < (this.offset + 2000) && i < buf.length && j < current.length; i++, j++) {
-                current[j] = buf[i];
-            }
-            result = md.digest(current);
+            result = md.digest(buf);
             inputFile.close();
-        } catch (FileNotFoundException notFound) {
+        } catch (FileNotFoundException e) {
             System.out.println("Что за файл такой - " + file);
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,12 +35,7 @@ public class Signature extends ParentSecure {
             e.printStackTrace();
         }
 
-        long answer = 1;
-        for (byte aResult : result) {
-            answer *= aResult;
-        }
-
-        return Long.toHexString(answer);
+        return Arrays.toString(result);
     }
 
     @Override
